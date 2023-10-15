@@ -1,22 +1,18 @@
 import http from "http";
-import {
-  promisify,
-} from "util";
+import dotenv from "dotenv";
 import {
   app,
 } from "./app";
 
+dotenv.config();
+
 const server = http.createServer(app);
-const closeServer = promisify(server.close);
-const port = 4000;
-const shutdown = async () => {
-  try {
-    await closeServer();
-  } catch (e) {
-    console.error(e);
-  } finally {
-    process.kill(process.pid);
-  }
+const port = parseInt(process.env.PORT || "4000", 10);
+const shutdown = async (signals: NodeJS.Signals) => {
+  server.close(() => {
+    console.log(`The application closed by ${signals}`);
+    process.exit(0);
+  })
 };
 
 server.listen(port, () => {
