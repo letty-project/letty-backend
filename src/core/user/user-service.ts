@@ -3,10 +3,6 @@ import {
   User,
 } from "./user-entity";
 
-const itsOK = async () => {
-  return "ok";
-};
-
 const signUp = async (email: string, password: string, nickname: string, isWriter: boolean) => {
   const salt = crypto.randomBytes(64);
   const encryptPassword = crypto.pbkdf2Sync(password, salt, 1000000, 64, "sha512");
@@ -21,12 +17,6 @@ const signUp = async (email: string, password: string, nickname: string, isWrite
   return user;
 };
 
-const signin = async () => {
-
-};
-
 export const UserService = {
-  itsOK,
-  signin,
   signUp,
 };
