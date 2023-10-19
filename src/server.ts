@@ -1,10 +1,15 @@
 import http from "http";
-import dotenv from "dotenv";
 import {
   app,
 } from "./app";
+import database from "./database";
+import { User } from "./core/user/user-entity";
 
-dotenv.config();
+
+database.authenticate().then(()=> {
+  console.log("connect")
+  User.sync();
+});
 
 const server = http.createServer(app);
 const port = parseInt(process.env.PORT || "4000", 10);
