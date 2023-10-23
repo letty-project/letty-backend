@@ -30,17 +30,23 @@ const localStrategyOption: IStrategyOptions = {
   session: true,
   passReqToCallback: false,
 };
+
+// passport local 인증
 passport.use("local", new LocalStrategy(localStrategyOption, async (email, password, done) => {
+  // email로 회원 찾기
   const user = await User.findOne({ where: { email } });
+  // 회원 없으면 error
   if (user == null) {
     return done(new Error("email or password incorrect"), false);
   }
+  // 입력한 비밀번호 암호화해서
   const salt = Buffer.from(user.salt, "base64");
   const encryptPassword = crypto.pbkdf2Sync(password, salt, 1000000, 64, "sha512");
   const currentPassword = Buffer.from(user.password, "base64");
   if (encryptPassword.equals(currentPassword)) {
     return done(null, user);
   }
+  // 비번 안 맞으면 error
   return done(new Error("email or password incorrect"), false);
 }));
 
