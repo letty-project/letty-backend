@@ -13,4 +13,6 @@ export const authRouter = Router();
 authRouter
   .post("/signin", asyncHandler(AuthController.signin))
   .post("/signup", asyncHandler(AuthController.signup))
-  .post("/signout", asyncHandler(AuthController.signout));
+  .post("/signout", asyncHandler(AuthController.signout))
+  .get("/google", asyncHandler(AuthController.google))
+  .get("/google/callback", asyncHandler(AuthController.googleCallback));

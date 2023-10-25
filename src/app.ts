@@ -9,6 +9,10 @@ import {
   Strategy as LocalStrategy,
 } from "passport-local";
 import {
+  IOAuth2StrategyOption,
+  OAuth2Strategy,
+} from "passport-google-oauth";
+import {
   rootRouter,
 } from "./api/root-router";
 import {
@@ -44,6 +48,18 @@ passport.use("local", new LocalStrategy(localStrategyOption, async (email, passw
   return done(new Error("email or password incorrect"), false);
 }));
 
+const googleStrageyOption: IOAuth2StrategyOption = {
+  clientID: process.env.GOOGLE_CLIENT_ID as string,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET_ID as string,
+  callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
+};
+passport.use("google", new OAuth2Strategy(googleStrageyOption, (accessToken, refreshToken, profile, done) => {
+  console.log(accessToken);
+  console.log(refreshToken);
+  console.log(profile);
+  done(null, {});
+}));
+
 app
   .use(helmet())
   .use(express.json())
@@ -52,4 +68,4 @@ app
   .use(session({ secret: sessionKey }))
   .use(passport.initialize())
   .use(passport.session())
-  .use(rootRouter);
+  .use("/api", rootRouter);
