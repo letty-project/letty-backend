@@ -16,6 +16,7 @@ interface UserAttributes {
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { };
 
+// 왜 Model로 안 쓰고 Model<UserAttributes, UserCreationAttributes>로 쓰는지 모르겠음
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;
   public nickname!: string;
@@ -25,6 +26,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public isWriter: boolean = false;
 };
 
+// 모델 정의
 User.init({
   id: {
     type: DataTypes.INTEGER,

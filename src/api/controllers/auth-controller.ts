@@ -20,6 +20,10 @@ const signout = async (req: Request, res: Response, next: NextFunction) => {
   // req.sess
 };
 
+/*
+ * 회원가입 함수 호출되면 service단의 signUp 함수로 받은 데이터 넘겨줌
+ * service단에서 DB 들어간 user 정보 리턴 받으면 200
+ */
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   const body = req.body;
   const user = await UserService.signUp(body.email, body.password, body.nickname, body.isWriter);
