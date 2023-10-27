@@ -1,10 +1,10 @@
 import passport from "passport";
 import {
-  NextFunction,
   Request,
   Response,
 } from "express";
 import {
+  User,
   UserService,
 } from "src/core";
 
@@ -31,10 +31,11 @@ const signup = async (req: Request, res: Response) => {
 
 const google = passport.authenticate("google", { scope: ["profile", "email"] });
 
-const googleCallback = passport.authenticate("google", { failureRedirect: "/login" }, (req: Request, res: Response) => {
-  console.log(req, res);
-  res.redirect("/")
-});
+const googleCallback = (req: Request, res: Response) => {
+  passport.authenticate("google", { failureRedirect: "/login" }, (err: Error, user: User) => {
+    res.redirect("/")
+  })(req, res);
+};
 
 export const AuthController = {
   signin,

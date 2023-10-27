@@ -17,7 +17,7 @@ import {
 } from "./api/root-router";
 import {
   User,
-} from "./core/user/user-entity";
+} from "src/core";
 
 export const app = express();
 const sessionKey: string = process.env.SESSION_KEY!;
@@ -53,11 +53,12 @@ const googleStrageyOption: IOAuth2StrategyOption = {
   clientSecret: process.env.GOOGLE_CLIENT_SECRET_ID as string,
   callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
 };
-passport.use("google", new OAuth2Strategy(googleStrageyOption, (accessToken, refreshToken, profile, done) => {
-  console.log(accessToken);
-  console.log(refreshToken);
-  console.log(profile);
-  done(null, {});
+passport.use("google", new OAuth2Strategy(googleStrageyOption, async (accessToken, refreshToken, profile, done) => {
+  let user = await User.findOne({ where: { googleId: profile.id } });
+  if (user == null) {
+    user = await User.create({ googleId: profile.id, nickname: profile.displayName, email: profile.emails?.at(-1)?.value!, isWriter: false })
+  }
+  return done(null, user);
 }));
 
 app

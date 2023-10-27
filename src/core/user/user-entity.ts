@@ -9,9 +9,12 @@ interface UserAttributes {
   id: number;
   nickname: string;
   email: string;
-  password: string;
-  salt: string;
+  password?: string;
+  salt?: string;
+  googleId?: string;
   isWriter: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { };
@@ -22,7 +25,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public email!: string;
   public password!: string;
   public salt!: string;
+  public googleId!: string;
   public isWriter: boolean = false;
+  public createdAt?: Date;
+  public updatedAt?: Date;
 };
 
 User.init({
@@ -30,26 +36,48 @@ User.init({
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
+    field: "id",
   },
   nickname: {
     type: DataTypes.STRING,
     allowNull: false,
+    field: "nickname",
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
+    field: "email",
   },
   password: {
     type: DataTypes.STRING,
     allowNull: true,
+    field: "password",
   },
   salt: {
     type: DataTypes.STRING,
     allowNull: true,
+    field: "salt",
+  },
+  googleId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: "google_id",
   },
   isWriter: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
+    defaultValue: false,
+    field: "is_writer",
+  },
+  createdAt: {
+    type: 'timestampz',
+    allowNull: false,
+    field: "created_at",
+  },
+  updatedAt: {
+    type: 'timestampz',
+    allowNull: false,
+    field: "updated_at",
   },
 }, {
   sequelize,
