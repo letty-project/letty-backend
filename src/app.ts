@@ -9,11 +9,15 @@ import {
   Strategy as LocalStrategy,
 } from "passport-local";
 import {
+  IOAuth2StrategyOption,
+  OAuth2Strategy,
+} from "passport-google-oauth";
+import {
   rootRouter,
 } from "./api/root-router";
 import {
   User,
-} from "./core/user/user-entity";
+} from "src/core";
 
 export const app = express();
 const sessionKey: string = process.env.SESSION_KEY!;
@@ -50,6 +54,19 @@ passport.use("local", new LocalStrategy(localStrategyOption, async (email, passw
   return done(new Error("email or password incorrect"), false);
 }));
 
+const googleStrageyOption: IOAuth2StrategyOption = {
+  clientID: process.env.GOOGLE_CLIENT_ID as string,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET_ID as string,
+  callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
+};
+passport.use("google", new OAuth2Strategy(googleStrageyOption, async (accessToken, refreshToken, profile, done) => {
+  let user = await User.findOne({ where: { googleId: profile.id } });
+  if (user == null) {
+    user = await User.create({ googleId: profile.id, nickname: profile.displayName, email: profile.emails?.at(-1)?.value!, isWriter: false })
+  }
+  return done(null, user);
+}));
+
 app
   .use(helmet())
   .use(express.json())
@@ -58,4 +75,4 @@ app
   .use(session({ secret: sessionKey }))
   .use(passport.initialize())
   .use(passport.session())
-  .use(rootRouter);
+  .use("/api", rootRouter);

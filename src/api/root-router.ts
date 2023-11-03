@@ -3,7 +3,6 @@ import {
 } from "express";
 import {
   authRouter,
-  baseRouter,
 } from "./routes";
 import {
   errorHandler,
@@ -12,6 +11,5 @@ import {
 export const rootRouter = Router();
 
 rootRouter
-  .use("/", baseRouter)
   .use("/auth", authRouter)
   .use(errorHandler);

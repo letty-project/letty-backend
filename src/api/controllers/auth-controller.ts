@@ -1,30 +1,26 @@
 import passport from "passport";
 import {
-  NextFunction,
   Request,
   Response,
 } from "express";
 import {
+  User,
   UserService,
 } from "src/core";
 
-const signin = async (req: Request, res: Response, next: NextFunction) => {
+const signin = async (req: Request, res: Response) => {
   passport.authenticate("local", (err: Error, user: any, info: any) => {
     console.log(user);
     res.status(200).json({ data: { success: true } })
   })(req, res);
 };
 
-const signout = async (req: Request, res: Response, next: NextFunction) => {
+const signout = async (req: Request, res: Response) => {
   // req.logout();
   // req.sess
 };
 
-/*
- * 회원가입 함수 호출되면 service단의 signUp 함수로 받은 데이터 넘겨줌
- * service단에서 DB 들어간 user 정보 리턴 받으면 200
- */
-const signup = async (req: Request, res: Response, next: NextFunction) => {
+const signup = async (req: Request, res: Response) => {
   const body = req.body;
   const user = await UserService.signUp(body.email, body.password, body.nickname, body.isWriter);
   if (user != null) {
@@ -33,8 +29,18 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
   return res.status(500).json({ error: { success: false } });
 };
 
+const google = passport.authenticate("google", { scope: ["profile", "email"] });
+
+const googleCallback = (req: Request, res: Response) => {
+  passport.authenticate("google", { failureRedirect: "/login" }, (err: Error, user: User) => {
+    res.redirect("/")
+  })(req, res);
+};
+
 export const AuthController = {
   signin,
   signup,
   signout,
+  google,
+  googleCallback,
 };
