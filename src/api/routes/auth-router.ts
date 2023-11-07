@@ -10,13 +10,31 @@ import {
 
 export const authRouter = Router();
 
-/*
- * 라우터로 요청이 들어오면 컨트롤러의 함수로 연결
- * (asyncHandler 왜 쓰는지 모르겠음)
- */
 authRouter
-  .post("/signin", asyncHandler(AuthController.signin))
-  .post("/signup", asyncHandler(AuthController.signup))
-  .post("/signout", asyncHandler(AuthController.signout))
-  .get("/google", asyncHandler(AuthController.google))
-  .get("/google/callback", asyncHandler(AuthController.googleCallback));
+  .post("/signin", 
+    // #swagger.tags = ['Auth']
+    // #swagger.description = '로그인'
+    asyncHandler(AuthController.signin))
+  .post("/signup", 
+    // #swagger.tags = ['Auth']
+    // #swagger.description = '회원가입'
+    /* 
+      #swagger.parameters['body'] = {
+        in: 'body',
+        description: '회원가입 데이터',
+        required: true,
+     }
+    */
+    asyncHandler(AuthController.signup))
+  .post("/signout", 
+    // #swagger.tags = ['Auth']
+    // #swagger.description = '로그아웃'
+    asyncHandler(AuthController.signout))
+  .get("/google", 
+    // #swagger.tags = ['Auth']
+    // #swagger.description = '구글 로그인'
+    asyncHandler(AuthController.google))
+  .get("/google/callback", 
+    // #swagger.tags = ['Auth']
+    // #swagger.description = '구글 콜백'
+    asyncHandler(AuthController.googleCallback));

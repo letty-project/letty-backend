@@ -4,6 +4,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
+import swaggerUi from "swagger-ui-express";
 import {
   IStrategyOptions,
   Strategy as LocalStrategy,
@@ -28,6 +29,7 @@ passport.serializeUser((user: any, done) => {
 passport.deserializeUser((user: any, done) => {
   done(null, user);
 });
+
 const localStrategyOption: IStrategyOptions = {
   usernameField: "email",
   passwordField: "password",
@@ -67,12 +69,15 @@ passport.use("google", new OAuth2Strategy(googleStrageyOption, async (accessToke
   return done(null, user);
 }));
 
+const swaggerFile = require("./api/swagger/swagger-output.json");
+
 app
-  .use(helmet())
-  .use(express.json())
-  .use(express.urlencoded({ extended: true }))
-  .use(cookieParser())
-  .use(session({ secret: sessionKey }))
+.use(helmet())
+.use(express.json())
+.use(express.urlencoded({ extended: true }))
+.use(cookieParser())
+.use(session({ secret: sessionKey }))
   .use(passport.initialize())
   .use(passport.session())
-  .use("/api", rootRouter);
+  .use("/api", rootRouter)
+  .use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));

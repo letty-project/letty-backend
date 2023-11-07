@@ -10,14 +10,11 @@ import {
 
 const signin = async (req: Request, res: Response) => {
   passport.authenticate("local", (err: Error, user: any, info: any) => {
-    console.log(user);
     res.status(200).json({ data: { success: true } })
   })(req, res);
 };
 
 const signout = async (req: Request, res: Response) => {
-  // req.logout();
-  // req.sess
 };
 
 const signup = async (req: Request, res: Response) => {

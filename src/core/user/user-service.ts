@@ -22,6 +22,12 @@ const signUp = async (email: string, password: string, nickname: string, isWrite
   return user;
 };
 
+const findAll = async () => {
+  const users = await User.findAll();
+  return users;
+}
+
 export const UserService = {
   signUp,
+  findAll,
 };

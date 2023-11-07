@@ -1,0 +1,95 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Letty",
+    "description": "API 문서"
+  },
+  "host": "http://localhost:4000",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/signin": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "로그인",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/signup": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "회원가입",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "회원가입 데이터",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/signout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "로그아웃",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/google": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "구글 로그인",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/google/callback": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "구글 콜백",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "apis": [
+    "../routes/*.ts"
+  ]
+}
