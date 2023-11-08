@@ -19,7 +19,6 @@ interface UserAttributes {
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { };
 
-// 왜 Model로 안 쓰고 Model<UserAttributes, UserCreationAttributes>로 쓰는지 모르겠음
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;
   public nickname!: string;
@@ -72,12 +71,12 @@ User.init({
     field: "is_writer",
   },
   createdAt: {
-    type: 'timestampz',
+    type: 'timestamp',
     allowNull: false,
     field: "created_at",
   },
   updatedAt: {
-    type: 'timestampz',
+    type: 'timestamp',
     allowNull: false,
     field: "updated_at",
   },
