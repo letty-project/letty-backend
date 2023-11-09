@@ -14,3 +14,4 @@ postRouter
   .get("/", asyncHandler(PostController.getPosts))
   .get("/:id", asyncHandler(PostController.getPost))
   .post("/", asyncHandler(PostController.createPost))
+  .delete("/:id", asyncHandler(PostController.deletePost))

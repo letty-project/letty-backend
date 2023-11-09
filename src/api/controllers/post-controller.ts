@@ -10,8 +10,8 @@ const createPost = async (req: Request, res: Response) => {
   if (req.user == null) {
     return res.status(401).json({ success: false, error: "Unauthorized" });
   }
-  const post = await PostService.createPost(req.body.title, req.body.content, req.user as number);
-  console.log(post);
+  const userId = req.user as number;
+  const post = await PostService.createPost(req.body.title, req.body.content, userId);
   return res.status(200).json({
     success: true,
     data: post,
@@ -45,8 +45,21 @@ const getPost = async (req: Request, res: Response) => {
   });
 };
 
+const deletePost = async (req: Request, res: Response) => {
+  if (req.user == null) {
+    return res.status(401).json({ success: false, error: "Unauthorized" });
+  }
+  const userId = req.user as number;
+  const postId = parseInt(req.params.id, 10) || 0;
+  const result = await PostService.deletePostById(postId, userId);
+  return res.status(200).json({
+    success: result,
+  });
+};
+
 export const PostController = {
   createPost,
   getPosts,
   getPost,
+  deletePost,
 };

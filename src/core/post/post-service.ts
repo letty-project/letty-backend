@@ -54,8 +54,19 @@ const getPostById = async (id: number) => {
   return post;
 };
 
+const deletePostById = async (postId: number, userId: number) => {
+  const deletedCount = await Post.destroy({
+    where: {
+      id: postId,
+      userId,
+    },
+  });
+  return deletedCount === 1;
+};
+
 export const PostService = {
   createPost,
   getPostsByPagination,
   getPostById,
+  deletePostById,
 };
