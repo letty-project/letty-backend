@@ -3,12 +3,15 @@ import {
   app,
 } from "./app";
 import database from "./database";
-import { User } from "./core/user/user-entity";
+import {
+  User,
+  Post
+} from "./core";
 
-
-database.authenticate().then(()=> {
+database.authenticate().then(() => {
   console.log("connect")
   User.sync();
+  Post.sync();
 });
 
 const server = http.createServer(app);
