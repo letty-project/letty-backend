@@ -3,6 +3,7 @@ import {
 } from "express";
 import {
   authRouter,
+  postRouter,
 } from "./routes";
 import {
   errorHandler,
@@ -12,4 +13,5 @@ export const rootRouter = Router();
 
 rootRouter
   .use("/auth", authRouter)
+  .use("/posts", postRouter)
   .use(errorHandler);
