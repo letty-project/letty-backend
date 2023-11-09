@@ -20,8 +20,9 @@ const createPost = async (req: Request, res: Response) => {
 
 const getPosts = async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string || "1", 10);
-  const limit = parseInt(req.query.limit as string || "1", 10);
-  const { posts, totalPosts } = await PostService.getPostsByPagination(page, limit);
+  const limit = parseInt(req.query.limit as string || "6", 10);
+  const search = req.query.search as string;
+  const { posts, totalPosts } = await PostService.getPostsByPagination(page, limit, search);
   return res.status(200).json({
     success: true,
     data: {
