@@ -12,4 +12,5 @@ export const postRouter = Router();
 
 postRouter
   .get("/", asyncHandler(PostController.getPosts))
+  .get("/:id", asyncHandler(PostController.getPost))
   .post("/", asyncHandler(PostController.createPost))

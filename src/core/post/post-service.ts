@@ -39,7 +39,23 @@ const getPostsByPagination = async (page: number = 1, limit: number = 6) => {
   };
 };
 
+const getPostById = async (id: number) => {
+  const post = await Post.findOne({
+    where: {
+      id,
+    },
+    include: [
+      {
+        model: User,
+        as: "user",
+      },
+    ],
+  });
+  return post;
+};
+
 export const PostService = {
   createPost,
   getPostsByPagination,
+  getPostById,
 };

@@ -73,12 +73,12 @@ Post.init({
   modelName: "Post",
 });
 Post.belongsTo(User, {
-  foreignKey: 'user_id',
+  foreignKey: 'userId',
   targetKey: 'id',
   as: 'user'
 });
 User.hasMany(Post, {
   sourceKey: "id",
-  foreignKey: 'user_id',
+  foreignKey: 'userId',
   as: "posts",
 });

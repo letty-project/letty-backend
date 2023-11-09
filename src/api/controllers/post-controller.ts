@@ -18,10 +18,10 @@ const createPost = async (req: Request, res: Response) => {
   });
 };
 
-const getPosts = async(req: Request, res: Response)=> {
+const getPosts = async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string || "1", 10);
   const limit = parseInt(req.query.limit as string || "1", 10);
-  const {posts, totalPosts} = await PostService.getPostsByPagination(page, limit);
+  const { posts, totalPosts } = await PostService.getPostsByPagination(page, limit);
   return res.status(200).json({
     success: true,
     data: {
@@ -29,10 +29,24 @@ const getPosts = async(req: Request, res: Response)=> {
       posts,
     },
   });
-  console.log(posts);
+};
+
+const getPost = async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10) || 0;
+  const post = await PostService.getPostById(id);
+  if (post == null) {
+    return res.status(404).json({
+      success: false,
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    data: post,
+  });
 };
 
 export const PostController = {
   createPost,
   getPosts,
+  getPost,
 };
