@@ -26,7 +26,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public password!: string;
   public salt!: string;
   public googleId!: string;
-  public isWriter: boolean = false;
+  public isWriter!: boolean;
   public createdAt?: Date;
   public updatedAt?: Date;
 };
@@ -83,4 +83,10 @@ User.init({
 }, {
   sequelize,
   tableName: "user",
+  modelName: "User",
+  defaultScope: {
+    attributes: {
+      exclude: ["password", "salt", "googleId"]
+    }
+  },
 });
