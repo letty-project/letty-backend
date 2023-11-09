@@ -1,4 +1,7 @@
 import {
+  Op,
+} from "sequelize";
+import {
   Post,
   User,
 } from "src/core";
@@ -17,10 +20,25 @@ const createPost = async (title: string, content: string, userId: number) => {
   return post;
 };
 
-const getPostsByPagination = async (page: number = 1, limit: number = 6) => {
+const getPostsByPagination = async (page: number = 1, limit: number = 6, search?: string) => {
   page -= 1;
-  const totalPosts = await Post.count({});
+  const totalPosts = await Post.count({
+    where: {
+      ...(search != null && {
+        title: {
+          [Op.like]: `%${search}%`,
+        },
+      }),
+    },
+  });
   const posts = await Post.findAll({
+    where: {
+      ...(search != null && {
+        title: {
+          [Op.like]: `%${search}%`,
+        },
+      }),
+    },
     offset: page * limit,
     limit,
     order: [
