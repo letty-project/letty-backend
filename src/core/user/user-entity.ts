@@ -20,15 +20,15 @@ interface UserAttributes {
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { };
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  public id!: number;
-  public nickname!: string;
-  public email!: string;
-  public password!: string;
-  public salt!: string;
-  public googleId!: string;
-  public isWriter!: boolean;
-  public createdAt?: Date;
-  public updatedAt?: Date;
+  public id: number;
+  public nickname: string;
+  public email: string;
+  public password: string;
+  public salt: string;
+  public googleId?: string;
+  public isWriter: boolean;
+  public createdAt: Date;
+  public updatedAt: Date;
 };
 
 // 모델 정의

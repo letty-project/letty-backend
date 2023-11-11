@@ -2,6 +2,9 @@ import crypto from "crypto";
 import {
   User,
 } from "./user-entity";
+import {
+  createRandomPassword,
+} from "src/core/util";
 
 const signUp = async (email: string, password: string, nickname: string, isWriter: boolean) => {
   const salt = crypto.randomBytes(64);
@@ -27,8 +30,21 @@ const checkEmail = async (email: string) => {
   return exists > 0;
 };
 
+const resetPassword = async (user: User) => {
+  const newPassword = createRandomPassword();
+  user.password = newPassword;
+  await user.save();
+  return newPassword;
+};
+
+const findOneByEmail = (email: string) => {
+  return User.findOne({ where: { email } });
+};
+
 export const UserService = {
   signUp,
   findAll,
   checkEmail,
+  resetPassword,
+  findOneByEmail,
 };

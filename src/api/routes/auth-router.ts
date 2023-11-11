@@ -2,12 +2,16 @@ import {
   Router,
 } from "express";
 import {
-  asyncHandler, validateMiddleware,
+  asyncHandler,
+  validateMiddleware,
 } from "src/api/middlewares";
 import {
   AuthController,
 } from "src/api/controllers";
-import { CheckEmailDTO } from "../dto";
+import {
+  CheckEmailDto,
+  ResetPasswordDto,
+} from "src/api/dto";
 
 export const authRouter = Router();
 
@@ -32,8 +36,11 @@ authRouter
     // #swagger.description = '로그아웃'
     asyncHandler(AuthController.signout))
   .post("/check-email",
-    validateMiddleware(CheckEmailDTO),
+    validateMiddleware(CheckEmailDto),
     asyncHandler(AuthController.checkEmail))
+  .post("/find-password",
+    validateMiddleware(ResetPasswordDto),
+    asyncHandler(AuthController.resetPassword))
   .get("/google",
     // #swagger.tags = ['Auth']
     // #swagger.description = '구글 로그인'

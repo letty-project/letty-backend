@@ -12,11 +12,15 @@ const transport = createTransport({
   },
 });
 
-export const sendWriterEmail = async () => {
+const sendResetPasswordEmail = async (email: string, nickname: string, password: string) => {
   return await transport.sendMail({
-    text: 'i hope this works',
     from: 'letty <project@letty.day>',
-    to: 'letty <project@letty.day>',
-    subject: 'testing emailjs',
+    to: `${nickname} <${email}>`,
+    subject: '[중요] 비밀번호가 초기화 되었습니다',
+    text: `사용자의 비밀번호가 아래와 같이 초기화 되었습니다. ${password}`,
   });
+};
+
+export const EmailService = {
+  sendResetPasswordEmail,
 };

@@ -4,11 +4,13 @@ import {
   Response,
 } from "express";
 import {
+  EmailService,
   User,
   UserService,
 } from "src/core";
 import {
-  CheckEmailDTO,
+  CheckEmailDto,
+  ResetPasswordDto,
 } from "src/api/dto";
 
 const signin = async (req: Request, res: Response) => {
@@ -22,10 +24,10 @@ const signin = async (req: Request, res: Response) => {
     return req.login(user, (loginErr) => {
       if (loginErr) {
         console.error(loginErr);
-        return res.status(500).json({ error: { success: false } });
+        return res.status(500).json({ success: false });
       }
       // 로그인 성공
-      return res.status(200).json({ data: { success: true } });
+      return res.status(200).json({ success: true });
     });
   })(req, res);
 };
@@ -40,9 +42,9 @@ const signup = async (req: Request, res: Response) => {
   const body = req.body;
   const user = await UserService.signUp(body.email, body.password, body.nickname, body.isWriter);
   if (user != null) {
-    return res.status(200).json({ data: { success: true } });
+    return res.status(200).json({ success: true });
   }
-  return res.status(500).json({ error: { success: false } });
+  return res.status(500).json({ success: false });
 };
 
 const google = passport.authenticate("google", { scope: ["profile", "email"] });
@@ -54,10 +56,30 @@ const googleCallback = (req: Request, res: Response) => {
 };
 
 const checkEmail = async (req: Request, res: Response) => {
-  const body: CheckEmailDTO = req.body;
+  const body: CheckEmailDto = req.body;
   const exists = await UserService.checkEmail(body.email);
   return res.status(200).json({
-    exists,
+    success: true,
+    data: {
+      exists,
+    },
+  });
+};
+
+const resetPassword = async (req: Request, res: Response) => {
+  const body: ResetPasswordDto = req.body;
+  const user = await UserService.findOneByEmail(body.email);
+  if (user == null) {
+    return res.status(404).json({
+      success: false,
+      code: "Not found",
+      message: "User does not exist or is a Google account",
+    });
+  }
+  const password = await UserService.resetPassword(user);
+  await EmailService.sendResetPasswordEmail(user.email, user.nickname, password);
+  return res.status(200).json({
+    success: true,
   });
 };
 
@@ -68,4 +90,5 @@ export const AuthController = {
   google,
   googleCallback,
   checkEmail,
+  resetPassword,
 };
