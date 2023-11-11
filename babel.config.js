@@ -24,5 +24,7 @@ module.exports = {
   ],
   plugins: [
     ["module-resolver", aliasOptions],
+    ["@babel/plugin-proposal-decorators", { "version": "legacy" }],
+    ["@babel/plugin-transform-class-properties", { "loose": true }],
   ],
 };
