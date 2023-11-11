@@ -30,15 +30,14 @@ const checkEmail = async (email: string) => {
   return exists > 0;
 };
 
-const resetPassword = async (user: User) => {
+const resetPassword = async (email: string) => {
   const newPassword = createRandomPassword();
-  user.password = newPassword;
-  await user.save();
+  await User.update({ password: newPassword }, { where: { email } });
   return newPassword;
 };
 
 const findOneByEmail = (email: string) => {
-  return User.findOne({ where: { email } });
+  return User.findOne({ where: { email }, raw: true });
 };
 
 export const UserService = {

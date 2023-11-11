@@ -12,7 +12,7 @@ interface UserAttributes {
   password?: string;
   salt?: string;
   googleId?: string;
-  isWriter: boolean;
+  isWriter?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -26,7 +26,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public password: string;
   public salt: string;
   public googleId?: string;
-  public isWriter: boolean;
+  public isWriter?: boolean = false;
   public createdAt: Date;
   public updatedAt: Date;
 };

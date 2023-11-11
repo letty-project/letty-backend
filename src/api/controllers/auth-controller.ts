@@ -69,14 +69,14 @@ const checkEmail = async (req: Request, res: Response) => {
 const resetPassword = async (req: Request, res: Response) => {
   const body: ResetPasswordDto = req.body;
   const user = await UserService.findOneByEmail(body.email);
-  if (user == null) {
+  if (user == null || user.googleId != null) {
     return res.status(404).json({
       success: false,
       code: "Not found",
       message: "User does not exist or is a Google account",
     });
   }
-  const password = await UserService.resetPassword(user);
+  const password = await UserService.resetPassword(user.email);
   await EmailService.sendResetPasswordEmail(user.email, user.nickname, password);
   return res.status(200).json({
     success: true,

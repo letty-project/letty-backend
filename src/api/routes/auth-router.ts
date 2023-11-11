@@ -38,7 +38,7 @@ authRouter
   .post("/check-email",
     validateMiddleware(CheckEmailDto),
     asyncHandler(AuthController.checkEmail))
-  .post("/find-password",
+  .post("/reset-password",
     validateMiddleware(ResetPasswordDto),
     asyncHandler(AuthController.resetPassword))
   .get("/google",
