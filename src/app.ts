@@ -23,10 +23,10 @@ import {
 export const app = express();
 const sessionKey: string = process.env.SESSION_KEY!;
 
-passport.serializeUser((user: any, done) => {
+passport.serializeUser((user: Express.User, done) => {
   done(null, user);
 });
-passport.deserializeUser((user: any, done) => {
+passport.deserializeUser(async (user: Express.User, done) => {
   done(null, user);
 });
 
@@ -40,7 +40,7 @@ const localStrategyOption: IStrategyOptions = {
 // passport local 인증
 passport.use("local", new LocalStrategy(localStrategyOption, async (email, password, done) => {
   // email로 회원 찾기
-  const user = await User.findOne({ where: { email } });
+  const user = await User.findOne({ where: { email }, attributes: { include: ["password", "salt"] } });
   // 회원 없으면 error
   if (user == null) {
     return done(new Error("email or password incorrect"), false);
@@ -50,7 +50,7 @@ passport.use("local", new LocalStrategy(localStrategyOption, async (email, passw
   const encryptPassword = crypto.pbkdf2Sync(password, salt, 1000000, 64, "sha512");
   const currentPassword = Buffer.from(user.password, "base64");
   if (encryptPassword.equals(currentPassword)) {
-    return done(null, user);
+    return done(null, user.id);
   }
   // 비번 안 맞으면 error
   return done(new Error("email or password incorrect"), false);
@@ -62,7 +62,7 @@ const googleStrageyOption: IOAuth2StrategyOption = {
   callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
 };
 passport.use("google", new OAuth2Strategy(googleStrageyOption, async (accessToken, refreshToken, profile, done) => {
-  let user = await User.findOne({ where: { googleId: profile.id } });
+  let user = await User.findOne({ where: { googleId: profile.id }, attributes: { include: ["googleId"] } });
   if (user == null) {
     user = await User.create({ googleId: profile.id, nickname: profile.displayName, email: profile.emails?.at(-1)?.value!, isWriter: false })
   }
@@ -72,11 +72,18 @@ passport.use("google", new OAuth2Strategy(googleStrageyOption, async (accessToke
 const swaggerFile = require("./api/swagger/swagger-output.json");
 
 app
-.use(helmet())
-.use(express.json())
-.use(express.urlencoded({ extended: true }))
-.use(cookieParser())
-.use(session({ secret: sessionKey }))
+  .use(helmet())
+  .use(express.json())
+  .use(express.urlencoded({ extended: true }))
+  .use(cookieParser())
+  .use(session({
+    secret: sessionKey,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+    rolling: true,
+  }))
   .use(passport.initialize())
   .use(passport.session())
   .use("/api", rootRouter)
