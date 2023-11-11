@@ -1,6 +1,4 @@
 import crypto from "crypto";
-import passport from "passport";
-import LocalStrategy from "passport-local";
 import {
   User,
 } from "./user-entity";
@@ -22,9 +20,15 @@ const signUp = async (email: string, password: string, nickname: string, isWrite
 const findAll = async () => {
   const users = await User.findAll();
   return users;
-}
+};
+
+const checkEmail = async (email: string) => {
+  const exists = await User.count({ where: { email } });
+  return exists > 0;
+};
 
 export const UserService = {
   signUp,
   findAll,
+  checkEmail,
 };

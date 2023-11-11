@@ -2,20 +2,21 @@ import {
   Router,
 } from "express";
 import {
-  asyncHandler,
+  asyncHandler, validateMiddleware,
 } from "src/api/middlewares";
 import {
   AuthController,
 } from "src/api/controllers";
+import { CheckEmailDTO } from "../dto";
 
 export const authRouter = Router();
 
 authRouter
-  .post("/signin", 
+  .post("/signin",
     // #swagger.tags = ['Auth']
     // #swagger.description = '로그인'
     asyncHandler(AuthController.signin))
-  .post("/signup", 
+  .post("/signup",
     // #swagger.tags = ['Auth']
     // #swagger.description = '회원가입'
     /* 
@@ -26,15 +27,18 @@ authRouter
      }
     */
     asyncHandler(AuthController.signup))
-  .post("/signout", 
+  .post("/signout",
     // #swagger.tags = ['Auth']
     // #swagger.description = '로그아웃'
     asyncHandler(AuthController.signout))
-  .get("/google", 
+  .post("/check-email",
+    validateMiddleware(CheckEmailDTO),
+    asyncHandler(AuthController.checkEmail))
+  .get("/google",
     // #swagger.tags = ['Auth']
     // #swagger.description = '구글 로그인'
     asyncHandler(AuthController.google))
-  .get("/google/callback", 
+  .get("/google/callback",
     // #swagger.tags = ['Auth']
     // #swagger.description = '구글 콜백'
     asyncHandler(AuthController.googleCallback));

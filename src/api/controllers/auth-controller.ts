@@ -7,6 +7,9 @@ import {
   User,
   UserService,
 } from "src/core";
+import {
+  CheckEmailDTO,
+} from "src/api/dto";
 
 const signin = async (req: Request, res: Response) => {
   passport.authenticate("local", (err: Error, user: any, info: any) => {
@@ -16,7 +19,6 @@ const signin = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(500).json({ error: { success: false, message: info.message } }); // 'Missing credentials'
     }
-    
     return req.login(user, (loginErr) => {
       if (loginErr) {
         console.error(loginErr);
@@ -30,7 +32,7 @@ const signin = async (req: Request, res: Response) => {
 
 const signout = async (req: Request, res: Response) => {
   req.session.save((err) => {
-      //res.redirect('/');
+    //res.redirect('/');
   });
 };
 
@@ -47,8 +49,16 @@ const google = passport.authenticate("google", { scope: ["profile", "email"] });
 
 const googleCallback = (req: Request, res: Response) => {
   passport.authenticate("google", { failureRedirect: "/login" }, (err: Error, user: User) => {
-    res.redirect("/")
+    res.redirect("/");
   })(req, res);
+};
+
+const checkEmail = async (req: Request, res: Response) => {
+  const body: CheckEmailDTO = req.body;
+  const exists = await UserService.checkEmail(body.email);
+  return res.status(200).json({
+    exists,
+  });
 };
 
 export const AuthController = {
@@ -57,4 +67,5 @@ export const AuthController = {
   signout,
   google,
   googleCallback,
+  checkEmail,
 };
