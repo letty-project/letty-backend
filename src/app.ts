@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import express from "express";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
@@ -17,7 +16,7 @@ import {
   rootRouter,
 } from "./api/root-router";
 import {
-  User,
+  UserService,
 } from "src/core";
 
 export const app = express();
@@ -40,14 +39,14 @@ const localStrategyOption: IStrategyOptions = {
 // passport local 인증
 passport.use("local", new LocalStrategy(localStrategyOption, async (email, password, done) => {
   // email로 회원 찾기
-  const user = await User.findOne({ where: { email }, attributes: { include: ["password", "salt"] }, raw: true });
+  const user = await UserService.findOneByEmailWithAuth(email);
   // 회원 없으면 error
   if (user == null) {
     return done(new Error("email or password incorrect"), false);
   }
   // 입력한 비밀번호 암호화해서
   const salt = Buffer.from(user.salt!, "base64");
-  const encryptPassword = crypto.pbkdf2Sync(password, salt, 1000000, 64, "sha512");
+  const { encryptPassword } = UserService.encryptPassword(password, salt);
   const currentPassword = Buffer.from(user.password!, "base64");
   if (encryptPassword.equals(currentPassword)) {
     return done(null, user.id);
@@ -62,9 +61,9 @@ const googleStrageyOption: IOAuth2StrategyOption = {
   callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
 };
 passport.use("google", new OAuth2Strategy(googleStrageyOption, async (accessToken, refreshToken, profile, done) => {
-  let user = await User.findOne({ where: { googleId: profile.id }, attributes: { include: ["googleId"] } });
+  let user = await UserService.findOneByGoogleId(profile.id);
   if (user == null) {
-    user = await User.create({ googleId: profile.id, nickname: profile.displayName, email: profile.emails?.at(-1)?.value!, isWriter: false })
+    user = await UserService.createUserByGoogleId(profile.id, profile.displayName, profile.emails?.at(-1)?.value!);
   }
   return done(null, user);
 }));
@@ -83,6 +82,7 @@ app
       maxAge: 24 * 60 * 60 * 1000,
     },
     rolling: true,
+    resave: true,
   }))
   .use(passport.initialize())
   .use(passport.session())
