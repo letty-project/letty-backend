@@ -9,14 +9,13 @@ import {
 const signUp = async (email: string, password: string, nickname: string, isWriter: boolean) => {
   const salt = crypto.randomBytes(64);
   const encryptPassword = crypto.pbkdf2Sync(password, salt, 1000000, 64, "sha512");
-  const user = User.build({
+  const user = await User.create({
     email,
     nickname,
     password: encryptPassword.toString("base64"),
     salt: salt.toString("base64"),
     isWriter,
   });
-  await user.save();
   return user;
 };
 
@@ -30,9 +29,11 @@ const checkEmail = async (email: string) => {
   return exists > 0;
 };
 
-const resetPassword = async (email: string) => {
+const resetGeneratedPassword = async (email: string) => {
   const newPassword = createRandomPassword();
-  await User.update({ password: newPassword }, { where: { email } });
+  const salt = crypto.randomBytes(64);
+  const encryptPassword = crypto.pbkdf2Sync(newPassword, salt, 1000000, 64, "sha512");
+  await User.update({ salt: salt.toString("base64"), password: encryptPassword.toString("base64") }, { where: { email } });
   return newPassword;
 };
 
@@ -44,6 +45,6 @@ export const UserService = {
   signUp,
   findAll,
   checkEmail,
-  resetPassword,
+  resetGeneratedPassword,
   findOneByEmail,
 };

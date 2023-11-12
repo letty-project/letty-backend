@@ -1,12 +1,14 @@
 import sequelize from "src/database";
 import {
+  CreationOptional,
   DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
   Model,
-  Optional
 } from 'sequelize';
 
-interface UserAttributes {
-  id: number;
+interface User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  id: CreationOptional<number>;
   nickname: string;
   email: string;
   password?: string;
@@ -15,24 +17,8 @@ interface UserAttributes {
   isWriter?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
-}
-
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { };
-
-export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  public id: number;
-  public nickname: string;
-  public email: string;
-  public password: string;
-  public salt: string;
-  public googleId?: string;
-  public isWriter?: boolean = false;
-  public createdAt: Date;
-  public updatedAt: Date;
 };
-
-// 모델 정의
-User.init({
+export const User = sequelize.define<User>('User', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -81,12 +67,10 @@ User.init({
     field: "updated_at",
   },
 }, {
-  sequelize,
   tableName: "user",
-  modelName: "User",
   defaultScope: {
     attributes: {
       exclude: ["password", "salt", "googleId"]
-    }
+    },
   },
 });

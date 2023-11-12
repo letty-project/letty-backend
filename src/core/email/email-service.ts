@@ -16,8 +16,8 @@ const sendResetPasswordEmail = async (email: string, nickname: string, password:
   return await transport.sendMail({
     from: 'letty <project@letty.day>',
     to: `${nickname} <${email}>`,
-    subject: '[중요] 비밀번호가 초기화 되었습니다',
-    text: `사용자의 비밀번호가 아래와 같이 초기화 되었습니다. ${password}`,
+    subject: '[중요] 비밀번호가 변경 되었습니다',
+    text: `사용자의 비밀번호가 아래와 같이 변경 되었습니다. ${password}`,
   });
 };
 

@@ -16,10 +16,10 @@ import {
 const signin = async (req: Request, res: Response) => {
   passport.authenticate("local", (err: Error, user: any, info: any) => {
     if (err) {
-      return res.status(500).json({ error: { success: false, message: err } }); // Error: email or password incorrect
+      return res.status(500).json({ success: false, code: "Internal server error" }); // Error: email or password incorrect
     }
     if (!user) {
-      return res.status(500).json({ error: { success: false, message: info.message } }); // 'Missing credentials'
+      return res.status(500).json({ success: false, code: "Unauthorized", message: "email or password incorrect" }); // 'Missing credentials'
     }
     return req.login(user, (loginErr) => {
       if (loginErr) {
@@ -50,7 +50,7 @@ const signup = async (req: Request, res: Response) => {
 const google = passport.authenticate("google", { scope: ["profile", "email"] });
 
 const googleCallback = (req: Request, res: Response) => {
-  passport.authenticate("google", { failureRedirect: "/login" }, (err: Error, user: User) => {
+  passport.authenticate("google", { failureRedirect: "/login" }, (err: Error, user: typeof User) => {
     res.redirect("/");
   })(req, res);
 };
@@ -76,7 +76,7 @@ const resetPassword = async (req: Request, res: Response) => {
       message: "User does not exist or is a Google account",
     });
   }
-  const password = await UserService.resetPassword(user.email);
+  const password = await UserService.resetGeneratedPassword(body.email);
   await EmailService.sendResetPasswordEmail(user.email, user.nickname, password);
   return res.status(200).json({
     success: true,
