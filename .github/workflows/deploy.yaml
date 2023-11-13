@@ -29,7 +29,7 @@ jobs:
         run: npm run build
 
       - name: Zipping built files
-        run: zip -r ${{ github.sha }}.zip dist package.json package-lock.json Dockerfile
+        run: zip -r ${{ github.sha }}.zip build package.json package-lock.json Dockerfile
 
       - name: Upload built artifact
         uses: actions/upload-artifact@v2
