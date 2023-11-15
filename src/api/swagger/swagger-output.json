@@ -16,20 +16,8 @@
         "tags": [
           "Auth"
         ],
-        "description": "로그인",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/signup": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "회원가입",
+        "summary": "로그인",
+        "description": "이메일, 비밀번호 입력하여 로그인",
         "parameters": [
           {
             "name": "body",
@@ -49,12 +37,55 @@
         }
       }
     },
+    "/signup": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "회원가입",
+        "description": "이메일, 비밀번호, 닉네임, 작가여부 입력하여 회원가입",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "이메일",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/signout": {
       "post": {
         "tags": [
           "Auth"
         ],
         "description": "로그아웃",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/check-email": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/reset-password": {
+      "post": {
+        "description": "",
         "responses": {
           "default": {
             "description": ""
@@ -81,6 +112,42 @@
           "Auth"
         ],
         "description": "구글 콜백",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "",
         "responses": {
           "default": {
             "description": ""

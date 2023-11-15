@@ -1,5 +1,6 @@
 import passport from "passport";
 import {
+  NextFunction,
   Request,
   Response,
 } from "express";
@@ -32,10 +33,11 @@ const signin = async (req: Request, res: Response) => {
   })(req, res);
 };
 
-const signout = async (req: Request, res: Response) => {
-  req.session.save((err) => {
-    //res.redirect('/');
+const signout = async (req: Request, res: Response, next: NextFunction) => {
+  req.logout((err) => {
+    if (err) { return next(err) }
   });
+  return res.status(200).json({ data: { success: true } });
 };
 
 const signup = async (req: Request, res: Response) => {
